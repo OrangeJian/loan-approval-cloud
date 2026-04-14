@@ -1,0 +1,120 @@
+# 贷款审批系统 - 中间件编排
+# 使用: docker-compose up -d
+
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: loan-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: loan_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: loan-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nacos 服务注册与配置中心
+  nacos:
+    image: nacos/nacos-server:v2.2.3
+    container_name: loan-nacos
+    environment:
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: mysql
+      MYSQL_SERVICE_DB_NAME: loan_db
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_PASSWORD: root
+      JVM_XMS: 512m
+      JVM_XMX: 512m
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8848/nacos/"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  # RocketMQ NameServer
+  rocketmq-namesrv:
+    image: apache/rocketmq:5.1.4
+    container_name: loan-rmq-namesrv
+    ports:
+      - "9876:9876"
+    volumes:
+      - rocketmq-namesrv-data:/home/rocketmq/rocketmq-5.1.4/namesrv/logs
+      - rocketmq-namesrv-store:/home/rocketmq/rocketmq-5.1.4/namesrv/store
+    command: sh mqnamesrv
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/127.0.0.1/9876"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # RocketMQ Broker
+  rocketmq-broker:
+    image: apache/rocketmq:5.1.4
+    container_name: loan-rmq-broker
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    environment:
+      NAMESRV_ADDR: rocketmq-namesrv:9876
+      JAVA_OPTS: -Drocketmq.broker.diskSpaceWarningFreeRatio=0.05
+    volumes:
+      - rocketmq-broker-data:/home/rocketmq/rocketmq-5.1.4/broker/logs
+      - rocketmq-broker-store:/home/rocketmq/rocketmq-5.1.4/broker/store
+    depends_on:
+      rocketmq-namesrv:
+        condition: service_healthy
+    command: sh mqbroker -n rocketmq-namesrv:9876 -c ../broker.conf
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # RocketMQ Dashboard (可选)
+  rocketmq-dashboard:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    container_name: loan-rmq-dashboard
+    ports:
+      - "8087:8080"
+    environment:
+      JAVA_OPTS: -Drocketmq.config.namesrvAddr=rocketmq-namesrv:9876
+    depends_on:
+      - rocketmq-namesrv
+
+volumes:
+  mysql-data:
+  redis-data:
+  rocketmq-namesrv-data:
+  rocketmq-namesrv-store:
+  rocketmq-broker-data:
+  rocketmq-broker-store:
