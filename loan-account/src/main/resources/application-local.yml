@@ -1,0 +1,26 @@
+server:
+  port: 8086
+
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+      - org.apache.rocketmq.spring.RocketMQAutoConfiguration
+  cloud:
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+
+rocketmq:
+  enabled: false
+
+mybatis-plus:
+  enabled: false
+
+local:
+  mock:
+    enabled: true

@@ -18,7 +18,7 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
-    @Autowired
+    @Autowired(required = false)
     private StringRedisTemplate redisTemplate;
 
     private static final String PRODUCT_CACHE_KEY = "product:";
@@ -58,27 +58,27 @@ public class ProductService {
 
     public Result<Product> getByProductCode(String productCode) {
         String cacheKey = PRODUCT_CACHE_KEY + productCode;
-        String cached = redisTemplate.opsForValue().get(cacheKey);
-        if (cached != null) {
-            try {
-                com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                Product product = objectMapper.readValue(cached, Product.class);
-                return Result.success(product);
-            } catch (Exception e) {
-                // 缓存解析失败，从数据库查询
-                redisTemplate.delete(cacheKey);
+        if (redisTemplate != null) {
+            String cached = redisTemplate.opsForValue().get(cacheKey);
+            if (cached != null) {
+                try {
+                    com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                    Product product = objectMapper.readValue(cached, Product.class);
+                    return Result.success(product);
+                } catch (Exception e) {
+                    redisTemplate.delete(cacheKey);
+                }
             }
         }
 
         LambdaQueryWrapper<Product> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Product::getProductCode, productCode);
         Product product = productMapper.selectOne(wrapper);
-        if (product != null) {
+        if (product != null && redisTemplate != null) {
             try {
                 com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
                 redisTemplate.opsForValue().set(cacheKey, objectMapper.writeValueAsString(product));
             } catch (Exception e) {
-                // ignore cache error
             }
         }
         return Result.success(product);
@@ -92,13 +92,15 @@ public class ProductService {
 
     public Result<Void> update(Product product) {
         productMapper.updateById(product);
-        redisTemplate.delete(PRODUCT_CACHE_KEY + product.getProductCode());
+        if (redisTemplate != null) {
+            redisTemplate.delete(PRODUCT_CACHE_KEY + product.getProductCode());
+        }
         return Result.success();
     }
 
     public Result<Void> delete(Long id) {
         Product product = productMapper.selectById(id);
-        if (product != null) {
+        if (product != null && redisTemplate != null) {
             redisTemplate.delete(PRODUCT_CACHE_KEY + product.getProductCode());
         }
         productMapper.deleteById(id);

@@ -5,15 +5,17 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import org.apache.ibatis.reflection.MetaObject;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDateTime;
 
 /**
- * MyBatis-Plus配置
+ * Mybatis-Plus配置
  */
 @Configuration
+@ConditionalOnProperty(name = "mybatis-plus.enabled", havingValue = "true", matchIfMissing = true)
 public class MybatisPlusConfig {
 
     @Bean
