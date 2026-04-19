@@ -9,6 +9,10 @@ export default defineConfig({
       '/gateway': {
         target: 'http://localhost:8080',
         changeOrigin: true
+      },
+      '/product': {
+        target: 'http://localhost:8089',
+        changeOrigin: true
       }
     }
   }

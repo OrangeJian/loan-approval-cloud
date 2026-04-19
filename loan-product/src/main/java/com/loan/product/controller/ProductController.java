@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    public Result<List<Product>> listAll(@RequestParam(required = false) String productType) {
+    public Result<List<Product>> listAll(@RequestParam(name = "productType", required = false) String productType) {
         return productService.listAll(productType);
     }
 

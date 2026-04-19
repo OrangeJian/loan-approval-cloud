@@ -3,7 +3,22 @@
     "allow": [
       "Bash(python -c \"import graphify\")",
       "Bash(echo \"EXIT:$?\")",
-      "Bash(python *)"
+      "Bash(python *)",
+      "mcp__gitnexus__list_repos",
+      "mcp__gitnexus__query",
+      "Bash(mvn spring-boot:run -DskipTests)",
+      "Bash(npm run *)",
+      "Bash(where mvn *)",
+      "Read(//c/Program Files/Maven/**)",
+      "Read(//c/apache-maven/**)",
+      "Bash(java -version)",
+      "Bash(where java *)",
+      "Bash(npm install *)",
+      "Bash(mvn spring-boot:run *)",
+      "Bash(mvn install *)",
+      "Bash(curl -s http://localhost:8089/product/all)",
+      "Bash(curl -s -v http://localhost:8089/product/all)",
+      "Bash(taskkill //F //PID 40064)"
     ]
   }
 }
