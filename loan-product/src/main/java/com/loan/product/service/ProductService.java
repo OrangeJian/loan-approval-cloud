@@ -60,7 +60,14 @@ public class ProductService {
         String cacheKey = PRODUCT_CACHE_KEY + productCode;
         String cached = redisTemplate.opsForValue().get(cacheKey);
         if (cached != null) {
-            return Result.success(Product.class.cast(com.fasterxml.jackson.databind.ObjectMapper().readValue(cached, Product.class)));
+            try {
+                com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                Product product = objectMapper.readValue(cached, Product.class);
+                return Result.success(product);
+            } catch (Exception e) {
+                // 缓存解析失败，从数据库查询
+                redisTemplate.delete(cacheKey);
+            }
         }
 
         LambdaQueryWrapper<Product> wrapper = new LambdaQueryWrapper<>();
@@ -68,7 +75,8 @@ public class ProductService {
         Product product = productMapper.selectOne(wrapper);
         if (product != null) {
             try {
-                redisTemplate.opsForValue().set(cacheKey, com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(product));
+                com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                redisTemplate.opsForValue().set(cacheKey, objectMapper.writeValueAsString(product));
             } catch (Exception e) {
                 // ignore cache error
             }

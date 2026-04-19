@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -213,7 +214,7 @@ public class AccountService {
      */
     private BigDecimal calculateMonthlyPayment(BigDecimal principal, BigDecimal monthlyRate, Integer term) {
         BigDecimal onePlusR = BigDecimal.ONE.add(monthlyRate);
-        BigDecimal pow = onePlusR.pow(term, RoundingMode.HALF_UP);
+        BigDecimal pow = onePlusR.pow(term, MathContext.DECIMAL128);
         return principal.multiply(monthlyRate).multiply(pow)
                 .divide(pow.subtract(BigDecimal.ONE), 2, RoundingMode.HALF_UP);
     }

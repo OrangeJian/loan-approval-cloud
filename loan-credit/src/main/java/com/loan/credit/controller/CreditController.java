@@ -2,6 +2,7 @@ package com.loan.credit.controller;
 
 import com.loan.common.dto.Result;
 import com.loan.credit.service.CreditService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

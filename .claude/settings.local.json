@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import graphify\")",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(python *)"
+    ]
+  }
+}

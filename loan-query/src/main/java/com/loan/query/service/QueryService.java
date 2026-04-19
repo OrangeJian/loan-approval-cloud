@@ -15,6 +15,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class QueryService implements RocketMQListener<Object> {
 
         // 缓存结果
         redisTemplate.opsForValue().set(cacheKey, "1");
-        redisTemplate.expire(cacheKey, 300); // 5分钟
+        redisTemplate.expire(cacheKey, Duration.ofSeconds(300)); // 5分钟
 
         return Result.success(result);
     }

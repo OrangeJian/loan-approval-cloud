@@ -1,9 +1,9 @@
 package com.loan.common.config;
 
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.core.MessageTemplate;
 
 /**
  * RocketMQ配置
@@ -11,8 +11,17 @@ import org.springframework.messaging.core.MessageTemplate;
 @Configuration
 public class RocketMQConfig {
 
+    @Value("${rocketmq.name-server:localhost:9876}")
+    private String nameServer;
+
+    @Value("${rocketmq.producer.group:loan-producer-group}")
+    private String producerGroup;
+
     @Bean
-    public MessageTemplate messageTemplate() {
-        return new RocketMQTemplate();
+    public RocketMQTemplate rocketMQTemplate() {
+        RocketMQTemplate template = new RocketMQTemplate();
+        template.setProducerGroup(producerGroup);
+        template.setNameServer(nameServer);
+        return template;
     }
 }

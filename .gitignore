@@ -24,3 +24,5 @@ dist/
 # Environment
 .env
 .env.local
+.gitnexus
+graphify-out

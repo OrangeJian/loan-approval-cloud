@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -43,7 +44,7 @@ public class ChannelService {
         if (count != null && count > MAX_REQUEST_PER_MINUTE) {
             return false;
         }
-        redisTemplate.expire(key, 60L);
+        redisTemplate.expire(key, Duration.ofSeconds(60L));
         return true;
     }
 

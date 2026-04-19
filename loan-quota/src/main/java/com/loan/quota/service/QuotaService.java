@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 
 @Service
 public class QuotaService {
@@ -84,7 +85,7 @@ public class QuotaService {
     @Transactional
     public Result<Void> freezeQuota(Long loanId, BigDecimal amount, String triggerSource, String bizFlowNo) {
         String lockKey = QUOTA_LOCK_PREFIX + loanId;
-        if (!Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(lockKey, "1", 10L))) {
+        if (!Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(lockKey, "1", Duration.ofSeconds(10)))) {
             return Result.error("额度操作繁忙，请稍后重试");
         }
 
@@ -119,7 +120,7 @@ public class QuotaService {
     @Transactional
     public Result<Void> useQuota(Long loanId, BigDecimal amount, String triggerSource, String bizFlowNo) {
         String lockKey = QUOTA_LOCK_PREFIX + loanId;
-        if (!Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(lockKey, "1", 10L))) {
+        if (!Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(lockKey, "1", Duration.ofSeconds(10)))) {
             return Result.error("额度操作繁忙，请稍后重试");
         }
 
@@ -160,7 +161,7 @@ public class QuotaService {
     @Transactional
     public Result<Void> releaseQuota(Long loanId, BigDecimal amount, String triggerSource, String bizFlowNo) {
         String lockKey = QUOTA_LOCK_PREFIX + loanId;
-        if (!Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(lockKey, "1", 10L))) {
+        if (!Boolean.TRUE.equals(redisTemplate.opsForValue().setIfAbsent(lockKey, "1", Duration.ofSeconds(10)))) {
             return Result.error("额度操作繁忙，请稍后重试");
         }
 

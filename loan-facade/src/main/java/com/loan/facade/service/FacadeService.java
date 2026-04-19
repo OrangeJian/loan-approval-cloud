@@ -7,13 +7,14 @@ import com.loan.common.dto.Result;
 import com.loan.common.mq.CreditApplyMessage;
 import com.loan.common.mq.LoanApplyMessage;
 import com.loan.common.util.RedisLockUtil;
-import com.loan.common.util.SnowflakeIdUtil;
+import com.loan.common.util.IdGenerator;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.Map;
 
 /**
@@ -122,7 +123,7 @@ public class FacadeService {
     private void markProcessed(String bizFlowNo) {
         String key = "processed:" + bizFlowNo;
         redisTemplate.opsForValue().set(key, "1");
-        redisTemplate.expire(key, 24 * 60 * 60); // 24小时过期
+        redisTemplate.expire(key, Duration.ofHours(24)); // 24小时过期
     }
 
     private Long getLong(Object value) {
