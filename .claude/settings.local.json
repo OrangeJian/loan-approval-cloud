@@ -1,24 +1,25 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c \"import graphify\")",
-      "Bash(echo \"EXIT:$?\")",
-      "Bash(python *)",
-      "mcp__gitnexus__list_repos",
-      "mcp__gitnexus__query",
-      "Bash(mvn spring-boot:run -DskipTests)",
-      "Bash(npm run *)",
-      "Bash(where mvn *)",
-      "Read(//c/Program Files/Maven/**)",
-      "Read(//c/apache-maven/**)",
-      "Bash(java -version)",
-      "Bash(where java *)",
-      "Bash(npm install *)",
-      "Bash(mvn spring-boot:run *)",
-      "Bash(mvn install *)",
-      "Bash(curl -s http://localhost:8089/product/all)",
-      "Bash(curl -s -v http://localhost:8089/product/all)",
-      "Bash(taskkill //F //PID 40064)"
+      "Read(//j/loan-approval-cloud/**)",
+      "Bash(mvn compile *)",
+      "Bash(rm -f .claude/settings.local.json)",
+      "Bash(git checkout *)",
+      "Bash(cp J:/loan-approval-cloud/loan-product/src/main/java/com/loan/product/dto/ProductCreateDTO.java J:/loan-approval-cloud/.claude/worktrees/gifted-chaplygin-675366/loan-product/src/main/java/com/loan/product/dto/)",
+      "Bash(cp J:/loan-approval-cloud/loan-product/src/main/java/com/loan/product/dto/ProductUpdateDTO.java J:/loan-approval-cloud/.claude/worktrees/gifted-chaplygin-675366/loan-product/src/main/java/com/loan/product/dto/)",
+      "Bash(cp J:/loan-approval-cloud/loan-product/src/main/java/com/loan/product/dto/ProductQueryDTO.java J:/loan-approval-cloud/.claude/worktrees/gifted-chaplygin-675366/loan-product/src/main/java/com/loan/product/dto/)",
+      "Bash(cp J:/loan-approval-cloud/loan-product/src/main/java/com/loan/product/dto/ProductVO.java J:/loan-approval-cloud/.claude/worktrees/gifted-chaplygin-675366/loan-product/src/main/java/com/loan/product/dto/)",
+      "Bash(cp J:/loan-approval-cloud/loan-gateway/src/main/java/com/loan/gateway/dto/LoanApplyRequestDTO.java J:/loan-approval-cloud/.claude/worktrees/gifted-chaplygin-675366/loan-gateway/src/main/java/com/loan/gateway/dto/)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(gh pr *)",
+      "Bash(where gh *)",
+      "Bash(find / -name \"gh.exe\" -o -name \"gh\" 2>/dev/null | head -5 || echo \"Find not available, trying where\" && where gh gh.exe 2>&1 | head -5 || echo \"NO_GH_FOUND\")",
+      "Bash(git config *)",
+      "Bash(git credential-manager *)",
+      "Bash(curl -sL -o gh.zip \"https://github.com/cli/cli/releases/download/v2.63.2/gh_2.63.2_windows_amd64.zip\")",
+      "Bash(git credential *)"
     ]
   }
 }
