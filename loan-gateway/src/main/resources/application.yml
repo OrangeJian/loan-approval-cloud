@@ -21,3 +21,16 @@ feign:
       default:
         connectTimeout: 5000
         readTimeout: 10000
+
+partner:
+  channels:
+    PARTNER_A:
+      channelName: 合作方A
+      secretKey: sk_partner_a_secret_key_123456
+      rateLimitPerMinute: 100
+      status: enabled
+    PARTNER_B:
+      channelName: 合作方B
+      secretKey: sk_partner_b_secret_key_789012
+      rateLimitPerMinute: 200
+      status: enabled
